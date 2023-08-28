@@ -1,0 +1,44 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: peer0-dealer
+  labels:
+    app: peer0-dealer
+spec:
+  selector:
+    app: peer0-dealer
+  type: ClusterIP
+  ports:
+    - name: grpc
+      port: 7051
+      protocol: TCP
+      targetPort: 7051
+    # - name: "chaincode"
+    #   port: 7052
+    #   protocol: TCP
+    #   targetPort: 7052
+    - name: event
+      port: 7061
+      protocol: TCP
+      targetPort: 7061
+    - name: couchdb
+      port: 5984
+      protocol: TCP
+
+---
+#---------------- Peer0 org3 Metrics Service ---------------
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: peer0-dealer
+    metrics-service: "true"
+  name: peer0-dealer-metrics
+spec:
+  type: ClusterIP
+  ports:
+    - name: "peer-metrics"
+      port: 9443
+      targetPort: 9443
+  selector:
+    name: peer0-dealer

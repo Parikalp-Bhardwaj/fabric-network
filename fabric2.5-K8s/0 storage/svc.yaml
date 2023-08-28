@@ -1,0 +1,22 @@
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: myapp
+# spec:
+#   type: ClusterIP
+#   ports:
+#     # - name: "nginx"
+#     - port: 8080
+#       targetPort: 8080
+#       protocol: TCP
+# # ---
+# # kind: Endpoints
+# # apiVersion: v1
+# # metadata:
+# #   name: myapp
+# # subsets:
+# #   - addresses:
+# #       - ip: "10.106.29.164"
+# #     ports:
+# #       - port: 80
+# #         name: nginx

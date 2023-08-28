@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cli-peer0-dealer
+spec:
+  selector:
+    matchLabels:
+      app: cli-peer0-dealer
+  template:
+    metadata:
+      labels:
+        app: cli-peer0-dealer
+    spec:
+      volumes:
+        - name: fabricfiles
+          persistentVolumeClaim:
+            claimName: mypvc
+      containers:
+        - name: cli-peer0-dealer
+          image: hyperledger/fabric-tools:2.5
+          stdin: true
+          tty: true
+          resources:
+            limits:
+              memory: "300Mi"
+              cpu: "200m"
+            requests:
+              memory: "200Mi"
+              cpu: "200m"
+          workingDir: /
+          env:
+            # - name: CORE_VM_ENDPOINT
+            #   value: unix:///host/var/run/docker.sock
+            - name: ORDERER_CA
+              value: /organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+            - name: ORDERER_TLS_CA
+              value: /organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+            - name: CORE_PEER_ADDRESS
+              value: peer0-dealer:7051
+            - name: CORE_PEER_ID
+              value: cli.peer0.dealer.example.com
+            - name: CORE_PEER_LOCALMSPID
+              value: DealerMSP
+            - name: CORE_PEER_MSPCONFIGPATH
+              value: /organizations/peerOrganizations/dealer.example.com/users/Admin@dealer.example.com/msp
+            - name: CORE_PEER_TLS_CERT_FILE
+              value: /organizations/peerOrganizations/dealer.example.com/peers/peer0.dealer.example.com/tls/server.crt
+            - name: CORE_PEER_TLS_ENABLED
+              value: "true"
+            - name: CORE_PEER_TLS_KEY_FILE
+              value: /organizations/peerOrganizations/dealer.example.com/peers/peer0.dealer.example.com/tls/server.key
+            - name: CORE_PEER_TLS_ROOTCERT_FILE
+              value: /organizations/peerOrganizations/dealer.example.com/peers/peer0.dealer.example.com/tls/ca.crt
+            # - name: FABRIC_LOGGING_SPEC
+            #   value: ERROR
+            - name: GOPATH
+              value: /opt/gopath
+            - name: SYS_CHANNEL
+              value: channel-artifacts
+            - name: CORE_CHAINCODE_BUILDER
+              value: hyperledger/fabric-ccenv:2.5.0
+            - name: FABRIC_LOGGING_SPEC
+              value: DEBUG
+          volumeMounts:
+            - mountPath: /organizations
+              name: fabricfiles
+              subPath: organizations
+            - mountPath: /configtx
+              name: fabricfiles
+              subPath: configtx
+            - mountPath: /channel-artifacts
+              name: fabricfiles
+              subPath: channel-artifacts
+            - mountPath: /scripts
+              name: fabricfiles
+              subPath: scripts
+            - mountPath: /opt/gopath/src/github.com/chaincode/
+              name: fabricfiles
+              subPath: chaincode

@@ -1,0 +1,30 @@
+---
+#---------------- Chaincode Deployment ---------------------
+apiVersion: apps/v1 # for versions before 1.8.0 use apps/v1beta1
+kind: Deployment
+metadata:
+  name: chaincode-basic-dealer
+  labels:
+    app: chaincode-basic-dealer
+spec:
+  selector:
+    matchLabels:
+      app: chaincode-basic-dealer
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: chaincode-basic-dealer
+    spec:
+      containers:
+        - image: adityajoshi12/basic-cc-hlf:1.0
+          imagePullPolicy: Always
+          name: chaincode-basic-dealer
+          env:
+            - name: CHAINCODE_ID
+              value: "basic:b354f846fe1f78aa249e0018e6af3cd0ae723713811f0ddb92599c026cce4ae0"
+            - name: CHAINCODE_SERVER_ADDRESS
+              value: "0.0.0.0:7052"
+          ports:
+            - containerPort: 7052
